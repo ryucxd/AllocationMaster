@@ -8,11 +8,10 @@ namespace AllocationMaster
 {
     class CONNECT
     {
-        public static bool isAdmin;
-        public static bool bypass;
-        public static bool changeQuantity;
-        public static double newQuantity;
-
+        public static int login_ID;
+        public static string login_full_name;
+        public static int reallocation_cancelled;
+        public static string reallocation_staff_name;
 
         public const string ConnectionString = "user id=sa;" +
 

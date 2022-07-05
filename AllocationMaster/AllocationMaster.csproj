@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,10 +56,64 @@
     <Compile Include="frmAllocation.Designer.cs">
       <DependentUpon>frmAllocation.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmAppendNote.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAppendNote.Designer.cs">
+      <DependentUpon>frmAppendNote.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmDepartmentNote.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDepartmentNote.Designer.cs">
+      <DependentUpon>frmDepartmentNote.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMultiple Notes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMultiple Notes.Designer.cs">
+      <DependentUpon>frmMultiple Notes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmNotes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNotes.Designer.cs">
+      <DependentUpon>frmNotes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmOrderInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOrderInfo.Designer.cs">
+      <DependentUpon>frmOrderInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmReallocation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmReallocation.Designer.cs">
+      <DependentUpon>frmReallocation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmAllocation.resx">
       <DependentUpon>frmAllocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAppendNote.resx">
+      <DependentUpon>frmAppendNote.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDepartmentNote.resx">
+      <DependentUpon>frmDepartmentNote.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMultiple Notes.resx">
+      <DependentUpon>frmMultiple Notes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNotes.resx">
+      <DependentUpon>frmNotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmOrderInfo.resx">
+      <DependentUpon>frmOrderInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmReallocation.resx">
+      <DependentUpon>frmReallocation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

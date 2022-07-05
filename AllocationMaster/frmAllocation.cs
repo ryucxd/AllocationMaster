@@ -72,6 +72,8 @@ namespace AllocationMaster
         public int date_complete_order_by_index { get; set; }
         public int _slimline { get; set; }
         //current alocation indexes
+
+        public int current_id_index { get; set; }
         public int current_door_id_index { get; set; }
         public int current_customer_index { get; set; }
         public int current_total_time_index { get; set; }
@@ -340,7 +342,7 @@ namespace AllocationMaster
                     if (row.Cells[op4_index].Value.ToString() == "True")
                         row.Cells[sl_buff_bend_index].Style.BackColor = Color.YellowGreen;
 
-       
+
                 }
 
 
@@ -380,17 +382,17 @@ namespace AllocationMaster
                     row.Cells[install_by_index].Style.BackColor = Color.YellowGreen;
                     row.Cells[install_index].Style.BackColor = Color.YellowGreen;
                 }
-                    //staff allocation
-                    if (string.IsNullOrEmpty(row.Cells[staff_allocation_index].Value.ToString()) == false) //staff allocation is not null + textdept is null
-                        row.Cells[staff_allocation_index].Style.BackColor = Color.YellowGreen;
-                    
+                //staff allocation
+                if (string.IsNullOrEmpty(row.Cells[staff_allocation_index].Value.ToString()) == false) //staff allocation is not null + textdept is null
+                    row.Cells[staff_allocation_index].Style.BackColor = Color.YellowGreen;
 
-                    if (row.Cells[department_note].Value.ToString().Length > 0)
-                        row.Cells[staff_allocation_index].Style.BackColor = Color.Gold;
+
+                if (row.Cells[department_note].Value.ToString().Length > 0)
+                    row.Cells[staff_allocation_index].Style.BackColor = Color.Gold;
 
                 if (row.Cells[date_paint_complete_index].Value.ToString().Length > 0)
                 {
-                    if ( DateTime.Now < Convert.ToDateTime(row.Cells[date_paint_complete_index].Value.ToString()).AddHours(1))
+                    if (DateTime.Now < Convert.ToDateTime(row.Cells[date_paint_complete_index].Value.ToString()).AddHours(1))
                         row.Cells[door_id_index].Style.BackColor = Color.LightSkyBlue;
                 }
                 if (row.Cells[proving_weld_index].Value.ToString() == "-1")
@@ -421,15 +423,50 @@ namespace AllocationMaster
                     if (row.Cells[pack_index].Style.BackColor != Color.YellowGreen)
                         row.Cells[pack_index].Style.BackColor = Color.Violet;
                 }
-                
+
 
 
 
 
             }
         }
-        private void loadAllocation(string sql)
+        private void loadAllocation()
         {
+            string sql = "";
+
+            switch (department)
+            {
+                case "Bending":
+                    sql = " SELECT * from view_allocation_master_bending  ";
+                    break;
+                case "Welding":
+                    sql = " SELECT * from view_allocation_master_welding  ";
+                    break;
+                case "Dressing":
+                    sql = " SELECT * from view_allocation_master_dressing   ";
+                    break;
+                case "Painting":
+                    sql = " SELECT * from view_allocation_master_painting   ";
+                    break;
+                case "Packing":
+                    sql = " SELECT * from view_allocation_master_packing   ";
+                    break;
+                case "Cutting":
+                    sql = " SELECT * from view_allocation_master_cutting   ";
+                    break;
+                case "Prepping":
+                    sql = " SELECT * from view_allocation_master_prepping     ";
+                    break;
+                case "Assembly":
+                    sql = " SELECT * from view_allocation_master_assembly   ";
+                    break;
+                case "SL Buff":
+                    sql = " SELECT * from view_allocation_master_sl_buff   ";
+                    break;
+            }
+
+            sql = sql + " ORDER BY date_comp_order_by,[Door ID]";
+
             if (dgvCurrentAllocations.DataSource != null)
             {
                 dgvCurrentAllocations.Columns.Clear();
@@ -553,23 +590,8 @@ namespace AllocationMaster
 
                 string sql = "SELECT * from view_allocation_master_bending ORDER BY date_comp_order_by,[Door ID]";
 
-
-
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
-
-
                 _slimline = 0;
-                loadAllocation(sql);
+                loadAllocation();
             }
         }
         private void chkWelding_CheckedChanged(object sender, EventArgs e)
@@ -582,21 +604,9 @@ namespace AllocationMaster
                 loadStaff(department);
 
                 string sql = "SELECT * from view_allocation_master_welding ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
-
 
                 _slimline = 0;
-                loadAllocation(sql);
+                loadAllocation();
             }
         }
 
@@ -610,21 +620,10 @@ namespace AllocationMaster
                 loadStaff(department);
 
                 string sql = "SELECT * from view_allocation_master_dressing ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
 
 
                 _slimline = 0;
-                loadAllocation(sql);
+                loadAllocation();
             }
         }
 
@@ -640,21 +639,10 @@ namespace AllocationMaster
 
 
                 string sql = "SELECT * from view_allocation_master_painting ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
 
 
                 _slimline = 0;
-                loadAllocation(sql);
+                loadAllocation();
             }
 
         }
@@ -670,21 +658,10 @@ namespace AllocationMaster
                 //loadAllocation("Packing", 0);
 
                 string sql = "SELECT * from view_allocation_master_packing ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
 
 
                 _slimline = 0;
-                loadAllocation(sql);
+                loadAllocation();
             }
         }
 
@@ -698,21 +675,10 @@ namespace AllocationMaster
                 loadStaff(department);
 
                 string sql = "SELECT * from view_allocation_master_cutting ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
 
 
                 _slimline = -1;
-                loadAllocation(sql);
+                loadAllocation();
             }
         }
 
@@ -726,21 +692,10 @@ namespace AllocationMaster
                     resetButtons(department);
                 loadStaff(department);
                 string sql = "SELECT * from view_allocation_master_prepping ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
 
 
                 _slimline = -1;
-                loadAllocation(sql);
+                loadAllocation();
             }
         }
 
@@ -754,21 +709,10 @@ namespace AllocationMaster
                 loadStaff(department);
 
                 string sql = "SELECT * from view_allocation_master_Assembly ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
 
 
                 _slimline = -1;
-                loadAllocation(sql);
+                loadAllocation();
             }
         }
 
@@ -782,21 +726,10 @@ namespace AllocationMaster
                 loadStaff(department);
 
                 string sql = "SELECT * from view_allocation_master_sl_buff ORDER BY  date_comp_order_by,[Door ID]";
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.id = ' + CAST(@door as nvarchar)
-                //--end
-
-                //--if (LEN(@customer) > 0)
-                //--begin
-                //--SET @sql = @sql + ' AND dbo.door.customer_acc_ref LIKE ''%' + @customer + '%'''
-                //--end
-
-                //--SET @sql = @sql + ' ORDER BY dbo.door.date_completion,id'
-                //--print @sql";
 
 
                 _slimline = -1;
-                loadAllocation(sql);
+                loadAllocation();
             }
 
         }
@@ -807,9 +740,7 @@ namespace AllocationMaster
                 row.DefaultCellStyle.BackColor = Color.Empty;
 
             dgvStaff.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.LightSkyBlue;
-
             dgvStaff.ClearSelection();
-
             loadCurrentAllocations();
         }
         private void loadCurrentAllocations()
@@ -844,7 +775,7 @@ namespace AllocationMaster
 
             if (department == "Welding")
             {
-                sql = "SELECT dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_weld * quantity_same) as float) / 60,2) as [Total Time]," +
+                sql = "SELECT dbo.door_allocation.id,dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_weld * quantity_same) as float) / 60,2) as [Total Time]," +
                     "case when complete_weld = -1 then 0 else round(cast((time_remaining_weld * quantity_same) as float) / 60, 2) end as [Time Remaining] ," +
                     "started_weld as [Start Time],date_weld_complete as [Finish Time],priority_status_weld as [priority_status],dbo.door.welding_note as [Department Note]" +
                     "FROM dbo.door_allocation LEFT JOIN dbo.door ON dbo.door_allocation.door_id = dbo.door.id LEFT JOIN dbo.SALES_LEDGER s on s.ACCOUNT_REF = dbo.door.customer_acc_ref " +
@@ -854,7 +785,7 @@ namespace AllocationMaster
 
             if (department == "Dressing")
             {
-                sql = "SELECT dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(CAST((time_buff * quantity_same) as float) / 60,2) as [Total Time]," +
+                sql = "SELECT dbo.door_allocation.id,dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(CAST((time_buff * quantity_same) as float) / 60,2) as [Total Time]," +
                     "case when complete_buff = -1 then 0 else round(cast((time_remaining_buff * quantity_same) as float) / 60, 2) end as [Time Remaining] ," +
                     "started_buff as [Start Time],date_buff_complete as [Finish Time],priority_status_buff as [priority_status],dbo.door.buffing_note[Department Note] " +
                     "FROM dbo.door_allocation LEFT JOIN dbo.door ON dbo.door_allocation.door_id = dbo.door.id LEFT JOIN dbo.SALES_LEDGER s on s.ACCOUNT_REF = dbo.door.customer_acc_ref " +
@@ -865,7 +796,7 @@ namespace AllocationMaster
 
             if (department == "Packing")
             {
-                sql = "SELECT dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(CAST((time_pack * quantity_same) as float) / 60,2) as [Total Time], " +
+                sql = "SELECT dbo.door_allocation.id, dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(CAST((time_pack * quantity_same) as float) / 60,2) as [Total Time], " +
                     "case when complete_pack = -1 then 0 else round(CAST((time_remaining_pack * quantity_same) as float) / 60, 2) end as [Time Remaining] , " +
                     "started_pack as [Start Time],date_pack_complete as [Finish Time],priority_status_pack as [priority_status],dbo.door.packing_note[Department Note] " +
                     "FROM dbo.door_allocation LEFT JOIN dbo.door ON dbo.door_allocation.door_id = dbo.door.id LEFT JOIN dbo.SALES_LEDGER s on s.ACCOUNT_REF = dbo.door.customer_acc_ref " +
@@ -874,7 +805,7 @@ namespace AllocationMaster
 
             if (department == "Cutting")
             {
-                sql = "SELECT dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_cutting * quantity_same) as float) / 60,2) as [Total Time], " +
+                sql = "SELECT dbo.door_allocation.id,dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_cutting * quantity_same) as float) / 60,2) as [Total Time], " +
                     "case when complete_cutting = -1 then 0 else round(cast((time_remaining_cutting * quantity_same) as float) / 60, 2) end as [Time Remaining] , " +
                     "started_cut as [Start Time],date_cutting_complete as [Finish Time],priority_status_cut as [priority_status],dbo.door.cutting_note[Department Note] " +
                     "FROM dbo.door_allocation LEFT JOIN dbo.door ON dbo.door_allocation.door_id = dbo.door.id LEFT JOIN dbo.SALES_LEDGER s on s.ACCOUNT_REF = dbo.door.customer_acc_ref " +
@@ -884,7 +815,7 @@ namespace AllocationMaster
 
             if (department == "Prepping")
             {
-                sql = "SELECT dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_prep * quantity_same) as float) / 60,2) as [Total Time]," +
+                sql = "SELECT dbo.door_allocation.id,dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_prep * quantity_same) as float) / 60,2) as [Total Time]," +
                     "case when complete_prep = -1 then 0 else round(cast((time_remaining_prepping * quantity_same) as float) / 60, 2) end as [Time Remaining] , " +
                     "started_prep as [Start Time],date_prepping_complete as [Finish Time],priority_status_prep as [priority_status],dbo.door.prepping_note[Department Note] " +
                     "FROM dbo.door_allocation LEFT JOIN dbo.door ON dbo.door_allocation.door_id = dbo.door.id LEFT JOIN dbo.SALES_LEDGER s on s.ACCOUNT_REF = dbo.door.customer_acc_ref " +
@@ -894,7 +825,7 @@ namespace AllocationMaster
             }
             if (department == "Assembly")
             {
-                sql = "SELECT dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_assembly * quantity_same) as float) / 60,2) as [Total Time], " +
+                sql = "SELECT dbo.door_allocation.id,dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_assembly * quantity_same) as float) / 60,2) as [Total Time], " +
                     "case when complete_assembly = -1 then 0 else round(cast((time_remianing_assembly * quantity_same) as float) / 60, 2) end as [Time Remaining] , " +
                     "started_assembly as [Start Time],date_assembly_complete as [Finish Time],priority_status_assembly as [priority_status],dbo.door.assembly_note[Department Note] " +
                     "FROM dbo.door_allocation LEFT JOIN dbo.door ON dbo.door_allocation.door_id = dbo.door.id LEFT JOIN dbo.SALES_LEDGER s on s.ACCOUNT_REF = dbo.door.customer_acc_ref " +
@@ -904,7 +835,7 @@ namespace AllocationMaster
             }
             if (department == "SL Buff")
             {
-                sql = "SELECT dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_SL_buff * quantity_same) as float) / 60,2) as [Total Time], " +
+                sql = "SELECT dbo.door_allocation.id,dbo.door.id as [Door ID],RTRIM(s.[NAME]) as [Customer],round(cast((time_SL_buff * quantity_same) as float) / 60,2) as [Total Time], " +
                     "case when complete_SL_buff = -1 then 0 else round(cast((time_remaining_sl_buff * quantity_same) as float) / 60, 2) end as [Time Remaining] , " +
                     "started_SL_buff as [Start Time],date_SL_buff_complete as [Finish Time],priority_status_SL_buff as [priority_status],dbo.door.sl_buff_note[Department Note] " +
                     "FROM dbo.door_allocation LEFT JOIN dbo.door ON dbo.door_allocation.door_id = dbo.door.id LEFT JOIN dbo.SALES_LEDGER s on s.ACCOUNT_REF = dbo.door.customer_acc_ref " +
@@ -928,6 +859,7 @@ namespace AllocationMaster
                     }
                 }
                 //format here?
+                current_id_index = dgvCurrentAllocations.Columns["id"].Index;
                 current_door_id_index = dgvCurrentAllocations.Columns["Door ID"].Index;
                 current_customer_index = dgvCurrentAllocations.Columns["Customer"].Index;
                 current_total_time_index = dgvCurrentAllocations.Columns["Total Time"].Index;
@@ -952,7 +884,7 @@ namespace AllocationMaster
                     current_remove_button = dgvCurrentAllocations.Columns["X"].Index;
                 //hide columns
                 dgvCurrentAllocations.Columns[current_priority_status_index].Visible = false;
-
+                dgvCurrentAllocations.Columns[current_id_index].Visible = false;
                 //auto all cells the others?
                 foreach (DataGridViewColumn col in dgvCurrentAllocations.Columns)
                 {
@@ -964,17 +896,359 @@ namespace AllocationMaster
 
         }
 
-        private void dgvCurrentAllocations_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-    
-        }
-
         private void dgvCurrentAllocations_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            int current_user = 0;
+            foreach (DataGridViewRow row in dgvStaff.Rows)
+            {
+                if (row.DefaultCellStyle.BackColor == Color.LightSkyBlue)
+                    current_user = Convert.ToInt32(row.Cells[1].Value);
+            }
             if (dgvCurrentAllocations.Columns[e.ColumnIndex].Index == current_remove_button)
             {
-                MessageBox.Show("aaa");
+                //remove this allocation 
+
+
+                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                {
+                    
+                    string sql = "DELETE  FROM dbo.door_allocation WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_id_index].Value.ToString();
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        cmd.ExecuteNonQuery();
+
+                    //get the correct departmentnote
+                    string dept_note = "";
+                    switch (department)
+                    {
+                        case "Bending":
+                            dept_note = "bending_note";
+                            break;
+                        case "Welding":
+                            dept_note = "welding_note";
+                            break;
+                        case "Dressing":
+                            dept_note = "buffing_note";
+                            break;
+                        case "Painting":
+                            dept_note = "painting_note";
+                            break;
+                        case "Packing":
+                            dept_note = "packing_note";
+                            break;
+                        default:
+                            dept_note = "skip";
+                            break;
+                    }
+
+                    //get the users full name
+                    string current_user_full_name = "";
+                    sql = "SELECT forename + ' ' + surname FROM [user_info].dbo.[user] WHERE id = " + current_user.ToString();
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        current_user_full_name = (string)cmd.ExecuteScalar().ToString();
+
+                    if (dept_note != "skip")
+                    {
+                        //remove the door allocation
+                        string op_allocation = "";
+                        switch (department)
+                        {
+                            case "Bending":
+                                op_allocation = "bend";
+                                break;
+                            case "Welding":
+                                op_allocation = "weld";
+                                break;
+                            case "Dressing":
+                                op_allocation = "buff";
+                                break;
+                            case "Painting":
+                                op_allocation = "paint";
+                                break;
+                            case "Packing":
+                                op_allocation = "pack";
+                                break;
+                            case "Cutting":
+                                op_allocation = "cut";
+                                break;
+                            case "prepping":
+                                op_allocation = "prep";
+                                break;
+                            case "assembly":
+                                op_allocation = "assembly";
+                                break;
+                            case "SL Buff":
+                                op_allocation = "sl_buff";
+                                break;
+                        }
+
+                        sql = "UPDATE dbo.door SET " + op_allocation + "_staff_allocation = NULL WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString();
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            cmd.ExecuteNonQuery();
+
+                        //from this point we ask if they would like to reallocate to ANOTHER employee
+                        DialogResult reallocation = MessageBox.Show("Would you like to reallocate this door to someone else?", "Reallocate", MessageBoxButtons.YesNo);
+                        if (reallocation == DialogResult.Yes)
+                        {
+                            frmReallocation frm = new frmReallocation(department);
+                            frm.ShowDialog();
+
+                            if (CONNECT.reallocation_cancelled == -1)
+                            {
+                                string note = "";
+                                sql = "SELECT " + dept_note + " FROM dbo.door WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString();
+                                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                    note = (string)cmd.ExecuteScalar().ToString();
+                                note = note + " DEALLOCATED FROM: " + current_user_full_name + " - " + DateTime.Now.ToString();
+                                sql = "UPDATE dbo.door SET " + dept_note + " = '" + note + "' WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString();
+                                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                    cmd.ExecuteNonQuery();
+                            } //cancel was hit so we insert the normal note
+                            else
+                            {
+                                //create the new reallocated note
+                                //get the new users ID
+                                sql = "SELECT id FROM [user_info].dbo.[user] WHERE forename + ' ' + surname = '" + CONNECT.reallocation_staff_name + "'";
+                                int new_staff_id = 0;
+                                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                    new_staff_id = Convert.ToInt32(cmd.ExecuteScalar());
+
+                                //get the old note 
+                                string note = "";
+                                sql = "SELECT " + dept_note + " FROM dbo.door WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString();
+                                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                    note = (string)cmd.ExecuteScalar().ToString();
+                                note = note + " [DOOR REALLOCATED FROM: " + current_user_full_name + " TO: " + CONNECT.reallocation_staff_name + " " + DateTime.Now.ToString() + "] ";
+                                sql = "UPDATE dbo.door SET " + dept_note + " = '" + note + "' WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString();
+                                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                    cmd.ExecuteNonQuery();
+
+                                sql = "INSERT INTO dbo.door_allocation (door_id, operation_date, department, staff_id,allocated_by) VALUES ( " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString() + ",GETDATE(),'" + department + "','" + new_staff_id + "','" + CONNECT.login_full_name + "');";
+                                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                    cmd.ExecuteNonQuery();
+                            }
+                        }
+                        else // we are not reallocating so 
+                        {
+                            //get the current note
+                            string note = "";
+                            sql = "SELECT " + dept_note + " FROM dbo.door WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString();
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                note = (string)cmd.ExecuteScalar().ToString();
+                            note = note + " DEALLOCATED FROM: " + current_user_full_name + " - " + DateTime.Now.ToString();
+                            sql = "UPDATE dbo.door SET " + dept_note + " = '" + note + "' WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString();
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                cmd.ExecuteNonQuery();
+
+                        }
+                    }
+                    conn.Close();
+                }
+
             }
+            loadAllocation();
+            loadStaff(department);
+
+            foreach (DataGridViewRow row in dgvStaff.Rows)
+            {
+                if (row.Cells[1].Value.ToString() == current_user.ToString())
+                    row.DefaultCellStyle.BackColor = Color.LightSkyBlue;
+            }
+
+            dgvStaff.ClearSelection();
+            loadCurrentAllocations();
+        }
+
+
+
+        private void dgvAllocation_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int skipRefresh = 0;
+            int staff_id = 0;
+            foreach (DataGridViewRow row in dgvStaff.Rows)
+            {
+                if (row.DefaultCellStyle.BackColor == Color.LightSkyBlue)
+                    staff_id = Convert.ToInt32(row.Cells[1].Value);
+            }
+            if (staff_id > 0 && e.ColumnIndex == door_id_index)
+            {
+                //check if staff allocation is null! (also if its allocation blocc then remove it and try next
+                if (string.IsNullOrEmpty(dgvAllocation.Rows[e.RowIndex].Cells[staff_allocation_index].Value.ToString()) || dgvAllocation.Rows[e.RowIndex].Cells[staff_allocation_index].Value.ToString() == "Allocation Block ")
+                {
+                    using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                    {
+                        string sql = "";
+                        string door_id = dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString();
+                        conn.Open();
+                        //if its allocation block we need to very quickly delete their entry
+                        if (dgvAllocation.Rows[e.RowIndex].Cells[staff_allocation_index].Value.ToString() == "Allocation Block ")
+                        {
+                            sql = "DELETE FROM dbo.door_allocation WHERE door_id = " + door_id + " AND department = '" + department + "'";
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                                cmd.ExecuteNonQuery();
+
+                        }
+
+                        string staff_full_name = "";
+                        sql = "SELECT forename + ' ' + surname FROM [user_info].dbo.[user] WHERE id = " + staff_id.ToString();
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            staff_full_name = (string)cmd.ExecuteScalar().ToString();
+                        //inser into door_allocation
+                        sql = "INSERT INTO dbo.door_allocation (door_id, operation_date, department, staff_id,allocated_by) VALUES ( " + door_id + ",GETDATE(),'" + department + "','" + staff_id + "','" + CONNECT.login_full_name + "');";
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            cmd.ExecuteNonQuery();
+
+                        string op_allocation = "";
+                        switch (department)
+                        {
+                            case "Bending":
+                                op_allocation = "bend";
+                                break;
+                            case "Welding":
+                                op_allocation = "weld";
+                                break;
+                            case "Dressing":
+                                op_allocation = "buff";
+                                break;
+                            case "Painting":
+                                op_allocation = "paint";
+                                break;
+                            case "Packing":
+                                op_allocation = "pack";
+                                break;
+                            case "Cutting":
+                                op_allocation = "cut";
+                                break;
+                            case "prepping":
+                                op_allocation = "prep";
+                                break;
+                            case "assembly":
+                                op_allocation = "assembly";
+                                break;
+                            case "SL Buff":
+                                op_allocation = "sl_buff";
+                                break;
+                        }
+
+
+                        sql = "UPDATE dbo.door SET " + op_allocation + "_staff_allocation = '" + staff_full_name + "' WHERE id = " + door_id;
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            cmd.ExecuteNonQuery();
+
+
+                        string dept_note = "";
+                        switch (department)
+                        {
+                            case "Bending":
+                                dept_note = "bending_note";
+                                break;
+                            case "Welding":
+                                dept_note = "welding_note";
+                                break;
+                            case "Dressing":
+                                dept_note = "buffing_note";
+                                break;
+                            case "Painting":
+                                dept_note = "painting_note";
+                                break;
+                            case "Packing":
+                                dept_note = "packing_note";
+                                break;
+                            default:
+                                dept_note = "skip";
+                                break;
+                        }
+
+                        string note = "";
+                        sql = "SELECT " + dept_note + " FROM dbo.door WHERE id = " + door_id.ToString();
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            note = (string)cmd.ExecuteScalar().ToString();
+                        note = note + "ALLOCATED TO: " + staff_full_name + " - " + DateTime.Now.ToString();
+                        sql = "UPDATE dbo.door SET " + dept_note + " = '" + note + "' WHERE id = " + door_id;
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            cmd.ExecuteNonQuery();
+
+                        conn.Close();
+                    }
+                }
+            }
+
+            if (e.ColumnIndex == order_info_index)
+            {
+                //open the order info screen
+                frmOrderInfo frm = new frmOrderInfo(department, Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
+                frm.ShowDialog();
+                skipRefresh = -1;
+            }
+
+            if (e.ColumnIndex == complete_stores_index)
+            {
+                //open the order info screen
+                frmNotes frm = new frmNotes(Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
+                frm.ShowDialog();
+            }
+
+            if (e.ColumnIndex == staff_allocation_index)
+            {
+                string department_note = "";
+                switch (department)
+                {
+                    case "Bending":
+                        department_note = "bending_note";
+                        break;
+                    case "Welding":
+                        department_note = "welding_note";
+                        break;
+                    case "Dressing":
+                        department_note = "buffing_note";
+                        break;
+                    case "Painting":
+                        department_note = "painting_note";
+                        break;
+                    case "Packing":
+                        department_note = "packing_note";
+                        break;
+                    case "Cutting":
+                        department_note = "cutting_note";
+                        break;
+                    case "Prepping":
+                        department_note = "prepping_note";
+                        break;
+                    case "Assembly":
+                        department_note = "assembly_note";
+                        break;
+                    case "SL Buff":
+                        department_note = "sl_buff_note";
+                        break;
+                }
+                frmDepartmentNote frm = new frmDepartmentNote(department, department_note, Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
+                frm.ShowDialog();
+            }
+
+
+            if (skipRefresh == 0)
+            {
+                loadAllocation();
+                loadStaff(department);
+
+                foreach (DataGridViewRow row in dgvStaff.Rows)
+                {
+                    if (row.Cells[1].Value.ToString() == staff_id.ToString())
+                        row.DefaultCellStyle.BackColor = Color.LightSkyBlue;
+                }
+
+                dgvStaff.ClearSelection();
+                loadCurrentAllocations();
+            }
+
+
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            frmReallocation frm = new frmReallocation(department);
+            frm.ShowDialog();
+            MessageBox.Show(CONNECT.reallocation_staff_name);
         }
     }
 }
