@@ -88,6 +88,7 @@ namespace AllocationMaster
         public frmAllocation()
         {
             InitializeComponent();
+            
         }
 
         private void loadStaff(string dept1)
@@ -433,7 +434,7 @@ namespace AllocationMaster
         private void loadAllocation()
         {
             string sql = "";
-
+            resetButtons(department);
             switch (department)
             {
                 case "Bending":
@@ -464,6 +465,10 @@ namespace AllocationMaster
                     sql = " SELECT * from view_allocation_master_sl_buff   ";
                     break;
             }
+
+            if (string.IsNullOrEmpty(txtDoorID.Text) == false)
+                sql = sql + " WHERE [Door ID] = " + txtDoorID.Text;
+
 
             sql = sql + " ORDER BY date_comp_order_by,[Door ID]";
 
@@ -500,7 +505,12 @@ namespace AllocationMaster
 
                     if (dgvAllocation.DataSource != null)
                     {
-                        dgvAllocation.Columns.Clear();
+                        try
+                        {
+                            dgvAllocation.Columns.Clear();
+                        }
+                        catch
+                        { }
                         dgvAllocation.DataSource = null;
                         if (dgvAllocation.Columns.Contains("Urgent") == true)
                             dgvAllocation.Columns.Remove("Urgent");
@@ -898,6 +908,7 @@ namespace AllocationMaster
 
         private void dgvCurrentAllocations_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            
             int current_user = 0;
             foreach (DataGridViewRow row in dgvStaff.Rows)
             {
@@ -907,7 +918,6 @@ namespace AllocationMaster
             if (dgvCurrentAllocations.Columns[e.ColumnIndex].Index == current_remove_button)
             {
                 //remove this allocation 
-
 
                 using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
                 {
@@ -1046,6 +1056,46 @@ namespace AllocationMaster
                 }
 
             }
+
+            if (e.ColumnIndex == current_dept_note_index)
+            {
+                string department_note = "";
+                switch (department)
+                {
+                    case "Bending":
+                        department_note = "bending_note";
+                        break;
+                    case "Welding":
+                        department_note = "welding_note";
+                        break;
+                    case "Dressing":
+                        department_note = "buffing_note";
+                        break;
+                    case "Painting":
+                        department_note = "painting_note";
+                        break;
+                    case "Packing":
+                        department_note = "packing_note";
+                        break;
+                    case "Cutting":
+                        department_note = "cutting_note";
+                        break;
+                    case "Prepping":
+                        department_note = "prepping_note";
+                        break;
+                    case "Assembly":
+                        department_note = "assembly_note";
+                        break;
+                    case "SL Buff":
+                        department_note = "sl_buff_note";
+                        break;
+                }
+                frmAppendNote frm = new frmAppendNote(department_note, Convert.ToInt32(dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_door_id_index].Value.ToString()));
+                frm.ShowDialog();
+
+            }
+
+
             loadAllocation();
             loadStaff(department);
 
@@ -1055,8 +1105,9 @@ namespace AllocationMaster
                     row.DefaultCellStyle.BackColor = Color.LightSkyBlue;
             }
 
-            dgvStaff.ClearSelection();
-            loadCurrentAllocations();
+                dgvStaff.ClearSelection();
+                loadCurrentAllocations();
+            
         }
 
 
@@ -1225,6 +1276,11 @@ namespace AllocationMaster
                 frm.ShowDialog();
             }
 
+            if (e.ColumnIndex == urgent_button_index)
+            {
+                frmUrgent frm  = new frmUrgent(Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
+                frm.ShowDialog();
+            }
 
             if (skipRefresh == 0)
             {
@@ -1249,6 +1305,19 @@ namespace AllocationMaster
             frmReallocation frm = new frmReallocation(department);
             frm.ShowDialog();
             MessageBox.Show(CONNECT.reallocation_staff_name);
+        }
+
+        private void txtDoorID_Leave(object sender, EventArgs e)
+        {
+            loadAllocation();
+        }
+
+        private void txtDoorID_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                loadAllocation();
+            }
         }
     }
 }
