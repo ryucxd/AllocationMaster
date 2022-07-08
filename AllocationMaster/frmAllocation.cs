@@ -88,7 +88,7 @@ namespace AllocationMaster
         public frmAllocation()
         {
             InitializeComponent();
-            
+
         }
 
         private void loadStaff(string dept1)
@@ -124,6 +124,7 @@ namespace AllocationMaster
             foreach (DataGridViewColumn col in dgvStaff.Columns)
             {
                 col.Visible = false;
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
             dgvStaff.Columns[dgvStaff.Columns.Count - 1].Visible = true;
             dgvStaff.Columns[dgvStaff.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -265,6 +266,8 @@ namespace AllocationMaster
             dgvAllocation.Columns[management_priority_index].Visible = false;
 
 
+            foreach (DataGridViewColumn col in dgvAllocation.Columns)
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
 
             //colouring  -- start up to staf alloc
             foreach (DataGridViewRow row in dgvAllocation.Rows)
@@ -527,7 +530,7 @@ namespace AllocationMaster
         }
         private void add_buttons()
         {
-            //
+            // urgent should be the only button we need 
             int columnIndex = 0;
             columnIndex = urgent_box_index + 1;
             DataGridViewButtonColumn urgentButton = new DataGridViewButtonColumn();
@@ -746,6 +749,8 @@ namespace AllocationMaster
 
         private void dgvStaff_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0)
+                return;
             foreach (DataGridViewRow row in dgvStaff.Rows)
                 row.DefaultCellStyle.BackColor = Color.Empty;
 
@@ -899,6 +904,7 @@ namespace AllocationMaster
                 foreach (DataGridViewColumn col in dgvCurrentAllocations.Columns)
                 {
                     col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 }
                 dgvCurrentAllocations.Columns[current_dept_note_index].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
@@ -908,7 +914,9 @@ namespace AllocationMaster
 
         private void dgvCurrentAllocations_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+            if (e.RowIndex < 0)
+                return;
+
             int current_user = 0;
             foreach (DataGridViewRow row in dgvStaff.Rows)
             {
@@ -921,7 +929,7 @@ namespace AllocationMaster
 
                 using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
                 {
-                    
+
                     string sql = "DELETE  FROM dbo.door_allocation WHERE id = " + dgvCurrentAllocations.Rows[e.RowIndex].Cells[current_id_index].Value.ToString();
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -1105,15 +1113,17 @@ namespace AllocationMaster
                     row.DefaultCellStyle.BackColor = Color.LightSkyBlue;
             }
 
-                dgvStaff.ClearSelection();
-                loadCurrentAllocations();
-            
+            dgvStaff.ClearSelection();
+            loadCurrentAllocations();
+
         }
 
 
 
         private void dgvAllocation_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0)
+                return;
             int skipRefresh = 0;
             int staff_id = 0;
             foreach (DataGridViewRow row in dgvStaff.Rows)
@@ -1278,7 +1288,7 @@ namespace AllocationMaster
 
             if (e.ColumnIndex == urgent_button_index)
             {
-                frmUrgent frm  = new frmUrgent(Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
+                frmUrgent frm = new frmUrgent(Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
                 frm.ShowDialog();
             }
 

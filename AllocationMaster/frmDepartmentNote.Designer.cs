@@ -36,7 +36,6 @@
             // 
             // txtNote
             // 
-            this.txtNote.Enabled = false;
             this.txtNote.Location = new System.Drawing.Point(12, 63);
             this.txtNote.Name = "txtNote";
             this.txtNote.ReadOnly = true;
@@ -79,10 +78,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(393, 277);
+            this.Controls.Add(this.txtNote);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblDepartment);
-            this.Controls.Add(this.txtNote);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

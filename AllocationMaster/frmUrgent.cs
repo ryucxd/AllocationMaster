@@ -14,6 +14,7 @@ namespace AllocationMaster
     public partial class frmUrgent : Form
     {
         public int _door_id { get; set; }
+        public int _old_door_id { get; set; }
         public frmUrgent(int door_id)
         {
             InitializeComponent();
@@ -24,17 +25,33 @@ namespace AllocationMaster
 
         private void loadData()
         {
+            string sql = "";
+            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            {
+                conn.Open();
+                //check if the door is legit
+                sql = "SELECT id FROM dbo.door WHERE id = " + _door_id;
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    var data = cmd.ExecuteScalar();
+                    if (data == null)
+                    {
+                        //door id does not exist - revert to the old one and move on 
+                        MessageBox.Show("The entered door number is not valid, reverting to the previous door number - " + _old_door_id.ToString(), "Invalid Door ID", MessageBoxButtons.OK);
+                        txtDoorID.Text = _old_door_id.ToString();
+                        _door_id = _old_door_id;
+                    }
+                }
 
-            string sql = "SELECT  CASE WHEN priority_status_stores = -1 then 'Urgent' else '' end as priority_status_stores,date_stores,complete_stores, " +
+
+                sql = "SELECT  CASE WHEN priority_status_stores = -1 then 'Urgent' else '' end as priority_status_stores,date_stores,complete_stores, " +
+                   "CASE WHEN priority_status_punch = -1 then 'Urgent' else '' end as priority_status_punch ,date_punch,complete_punch ," +
                 "CASE WHEN priority_status = -1 then 'Urgent' else '' end as priority_status ,date_bend, complete_bend, " +
                 "CASE WHEN priority_status_weld = -1 then 'Urgent' else '' end as priority_status_weld,date_weld,complete_weld, " +
                 "CASE WHEN priority_status_buff = -1 then 'Urgent' else '' end as priority_status_buff,date_buff, complete_buff, " +
                 "CASE WHEN priority_status_paint = -1 then 'Urgent' else '' end as priority_status_paint,date_paint,complete_paint, " +
                 "CASE WHEN priority_status_pack = -1 then 'Urgent' else '' end as priority_status_pack,date_pack,complete_pack, " +
-                "CASE WHEN priority_status_punch = -1 then 'Urgent' else '' end as priority_status_punch ,date_punch,complete_punch ," +
                 "date_completion FROM dbo.door  WHERE id = " + _door_id.ToString();
-            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
-            {
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -90,6 +107,7 @@ namespace AllocationMaster
                     else
                         chkPacking.Checked = false;
                 }
+                conn.Close();
                 colour();
             }
         }
@@ -143,12 +161,12 @@ namespace AllocationMaster
             if (txtBuffingUrgent.Text == "Urgent")
             {
                 txtBuffingUrgent.BackColor = Color.MediumPurple;
-                txtBendingDate.BackColor = Color.MediumPurple;
+                txtBuffingDate.BackColor = Color.MediumPurple;
             }
             else
             {
                 txtBuffingUrgent.BackColor = Color.Empty;
-                txtBendingDate.BackColor = Color.Empty;
+                txtBuffingDate.BackColor = Color.Empty;
             }
 
             if (txtPaintingUrgent.Text == "Urgent")
@@ -184,6 +202,14 @@ namespace AllocationMaster
         {
             if (e.KeyCode == Keys.Enter)
             {
+                _old_door_id = _door_id;
+
+                if (string.IsNullOrEmpty(txtDoorID.Text))
+                {
+                    MessageBox.Show("The entered door number is not valid, reverting to the previous door number - " + _old_door_id.ToString(), "Invalid Door ID", MessageBoxButtons.OK);
+                    txtDoorID.Text = _old_door_id.ToString();
+                    _door_id = _old_door_id;
+                }
                 _door_id = Convert.ToInt32(txtDoorID.Text);
                 loadData();
             }
@@ -206,18 +232,19 @@ namespace AllocationMaster
             loadData();
         }
 
-        private void update_prio(string value,string dept)
+        private void update_prio(string value, string dept)
         {
             string sql = "UPDATE dbo.door SET " + dept + " = " + value + " WHERE id = " + _door_id.ToString();
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand(sql,conn))
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     cmd.ExecuteNonQuery();
                 }
                 conn.Close();
             }
+            loadData();
         }
         private void btnStores_Click(object sender, EventArgs e)
         {
@@ -289,6 +316,39 @@ namespace AllocationMaster
                 value = "-1";
             update_prio(value, "priority_status_pack");
         }
+
+        private void btnUrgentAll_Click(object sender, EventArgs e)
+        {
+
+            string urgent_on = "";
+            if (txtStoresUrgent.Text == "Urgent" || txtPunchingUrgent.Text == "Urgent" || txtBendingUrgent.Text == "Urgent" || txtWeldingUrgent.Text == "Urgent" || txtBuffingUrgent.Text == "Urgent" || txtPaintingUrgent.Text == "Urgent" || txtPackingUrgent.Text == "Urgent")
+                urgent_on = "NULL";
+            else
+                urgent_on = "-1";
+            DialogResult result = MessageBox.Show("Are you sure you want to mark all departments as priority?", "Mark All", MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.Yes)
+            {
+                string sql = "UPDATE dbo.door set priority_status= " + urgent_on + ", priority_status_weld= " + urgent_on + ", priority_status_buff= " + urgent_on + ", priority_status_paint= " + urgent_on + ", " +
+                    "priority_status_pack= " + urgent_on + ", priority_status_stores= " + urgent_on + ", priority_status_punch = " + urgent_on + " WHERE id=" + _door_id;
+                //MessageBox.Show(sql);
+                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+
+                loadData();
+
+            }
+        }
+
+        private void btnNotes_Click(object sender, EventArgs e)
+        {
+            frmNotes frm = new frmNotes(_door_id);
+            frm.ShowDialog();
+        }
     }
 }
- 
