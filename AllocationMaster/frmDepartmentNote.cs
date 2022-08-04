@@ -20,14 +20,14 @@ namespace AllocationMaster
             InitializeComponent();
             _department_note = department_note;
             _door_id = door_id;
+            lblDoor.Text = "Door ID: " + _door_id.ToString();
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
                 conn.Open();
                 string sql = "SELECT " + department_note + " FROM dbo.door WHERE id = " + door_id.ToString();
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                     txtNote.Text = (string)cmd.ExecuteScalar().ToString();
-                
-                    conn.Close();
+                conn.Close();
             }
         }
 

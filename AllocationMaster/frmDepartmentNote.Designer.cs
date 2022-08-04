@@ -30,7 +30,7 @@
         {
             this.txtNote = new System.Windows.Forms.RichTextBox();
             this.lblDepartment = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblDoor = new System.Windows.Forms.Label();
             this.btnAdd = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -53,15 +53,15 @@
             this.lblDepartment.Text = "Packing Note";
             this.lblDepartment.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // label1
+            // lblDoor
             // 
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(15, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(366, 23);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Door ID: 67097";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.lblDoor.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDoor.Location = new System.Drawing.Point(15, 8);
+            this.lblDoor.Name = "lblDoor";
+            this.lblDoor.Size = new System.Drawing.Size(366, 23);
+            this.lblDoor.TabIndex = 2;
+            this.lblDoor.Text = "Door ID: 67097";
+            this.lblDoor.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // btnAdd
             // 
@@ -80,7 +80,7 @@
             this.ClientSize = new System.Drawing.Size(393, 277);
             this.Controls.Add(this.txtNote);
             this.Controls.Add(this.btnAdd);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblDoor);
             this.Controls.Add(this.lblDepartment);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -96,7 +96,7 @@
 
         private System.Windows.Forms.RichTextBox txtNote;
         private System.Windows.Forms.Label lblDepartment;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblDoor;
         private System.Windows.Forms.Button btnAdd;
     }
 }

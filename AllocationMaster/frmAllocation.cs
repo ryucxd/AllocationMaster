@@ -205,7 +205,7 @@ namespace AllocationMaster
             for (int i = 0; i < dgvAllocation.Columns.Count; i++)
                 dgvAllocation.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            dgvAllocation.Columns[complete_stores_index].Width = 20;
+            dgvAllocation.Columns[complete_stores_index].Width = 14;
             dgvAllocation.Columns[finish_index].Width = 80;
 
 
@@ -1290,6 +1290,30 @@ namespace AllocationMaster
             {
                 frmUrgent frm = new frmUrgent(Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
                 frm.ShowDialog();
+            }
+
+            if (e.ColumnIndex == prep_laser_index)
+            {
+                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                {
+                    string sql = "SELECT part_description as [Description],item_quantity as [Quantity],CASE WHEN part_complete = 0 THEN CAST(0 AS BIT) WHEN part_complete IS NULL THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT) END AS Complete FROM dbo.door_program_laser_parts d left join dbo.laser_parts l on d.part_id = l.id where d.door_id = " + dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString();
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        var getData = cmd.ExecuteScalar();
+                        if (getData != null)
+                        {
+                            frmLaserParts frm = new frmLaserParts(Convert.ToInt32(dgvAllocation.Rows[e.RowIndex].Cells[door_id_index].Value.ToString()));
+                            frm.ShowDialog();
+                        }
+                        else
+                            MessageBox.Show("No Laser Parts!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                        conn.Close();
+                }
+
+               
+                skipRefresh = -1;
             }
 
             if (skipRefresh == 0)
