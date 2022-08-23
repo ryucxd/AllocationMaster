@@ -527,6 +527,7 @@ namespace AllocationMaster
             add_buttons();
             column_index();
             formatAllocation();
+            dgvAllocation.ClearSelection();
         }
         private void add_buttons()
         {
@@ -908,6 +909,7 @@ namespace AllocationMaster
                 }
                 dgvCurrentAllocations.Columns[current_dept_note_index].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
+                dgvCurrentAllocations.ClearSelection();
             }
 
         }
@@ -1344,6 +1346,9 @@ namespace AllocationMaster
         private void txtDoorID_Leave(object sender, EventArgs e)
         {
             loadAllocation();
+            try
+            { loadCurrentAllocations(); }
+            catch { }
         }
 
         private void txtDoorID_KeyDown(object sender, KeyEventArgs e)
@@ -1351,6 +1356,9 @@ namespace AllocationMaster
             if (e.KeyCode == Keys.Enter)
             {
                 loadAllocation();
+                try
+                { loadCurrentAllocations(); }
+                catch { }
             }
         }
     }

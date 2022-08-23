@@ -75,6 +75,8 @@
             // 
             this.dgvStaff.AllowUserToAddRows = false;
             this.dgvStaff.AllowUserToDeleteRows = false;
+            this.dgvStaff.AllowUserToResizeColumns = false;
+            this.dgvStaff.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
@@ -211,6 +213,8 @@
             // 
             this.dgvAllocation.AllowUserToAddRows = false;
             this.dgvAllocation.AllowUserToDeleteRows = false;
+            this.dgvAllocation.AllowUserToResizeColumns = false;
+            this.dgvAllocation.AllowUserToResizeRows = false;
             this.dgvAllocation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -409,6 +413,8 @@
             // 
             this.dgvCurrentAllocations.AllowUserToAddRows = false;
             this.dgvCurrentAllocations.AllowUserToDeleteRows = false;
+            this.dgvCurrentAllocations.AllowUserToResizeColumns = false;
+            this.dgvCurrentAllocations.AllowUserToResizeRows = false;
             this.dgvCurrentAllocations.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
