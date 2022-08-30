@@ -1343,11 +1343,10 @@ namespace AllocationMaster
             MessageBox.Show(CONNECT.reallocation_staff_name);
         }
 
-        private void txtDoorID_Leave(object sender, EventArgs e)
-        {
-            loadAllocation();
+        private void txtDoorID_Leave(object sender, EventArgs e)  
+        {  //this try catch is used to stop the placement sql from bugging out when no dept/person is selected
             try
-            { loadCurrentAllocations(); }
+            { loadAllocation(); loadCurrentAllocations(); }
             catch { }
         }
 
@@ -1355,9 +1354,9 @@ namespace AllocationMaster
         {
             if (e.KeyCode == Keys.Enter)
             {
-                loadAllocation();
+               //same as above 
                 try
-                { loadCurrentAllocations(); }
+                { loadAllocation(); loadCurrentAllocations(); }
                 catch { }
             }
         }
